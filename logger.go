@@ -34,8 +34,10 @@ func NewLogger(level int, output io.Writer) *Logger {
 }
 
 func (l *Logger) log(level int, msg string) {
-	timestamp := time.Now().Format(time.RFC3339)
-	l.logger.Printf("%s [%s] %s\n", timestamp, logNames[level], msg)
+	if level >= l.level {
+		timestamp := time.Now().Format(time.RFC3339)
+		l.logger.Printf("%s [%s] %s\n", timestamp, logNames[level], msg)
+	}
 }
 
 func (l *Logger) Debug(msg string) {
