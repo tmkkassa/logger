@@ -1,19 +1,51 @@
 package logger
 
-import "fmt"
+import (
+	"io"
+	"log"
+)
 
-func Info(message string, params interface{}) {
-	fmt.Println("Log info message: ", message, " params: ", params)
+const (
+	DEBUG = iota
+	INFO
+	WARN
+	ERROR
+)
+
+var logNames = map[int]string{
+	DEBUG: "DEBUG",
+	INFO:  "INFO",
+	WARN:  "WARN",
+	ERROR: "ERROR",
 }
 
-func Error(message string, params interface{}) {
-	fmt.Println("Log error message: ", message, " params: ", params)
+type Logger struct {
+	level  int
+	logger *log.Logger
 }
 
-func Warning(message string, params interface{}) {
-	fmt.Println("Log warning message: ", message, " params: ", params)
+func NewLogger(level int, output io.Writer) *Logger {
+
+	return &Logger{
+		level:  level,
+		logger: log.New(output, "", log.LstdFlags),
+	}
 }
 
-func Fatal(message string, params interface{}) {
-	fmt.Println("Log fatal: message", message, " params: ", params)
+func (l *Logger) log(level int, msg string) {
+	// timestamp := time.Now().Format(time.RFC3339)
+	l.logger.Printf("[%s] %s\n", logNames[level], msg)
+}
+
+func (l *Logger) Debug(msg string) {
+	l.log(DEBUG, msg)
+}
+func (l *Logger) Info(msg string) {
+	l.log(INFO, msg)
+}
+func (l *Logger) Warn(msg string) {
+	l.log(WARN, msg)
+}
+func (l *Logger) Error(msg string) {
+	l.log(ERROR, msg)
 }
