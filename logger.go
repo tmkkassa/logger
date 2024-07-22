@@ -3,6 +3,7 @@ package logger
 import (
 	"io"
 	"log"
+	"time"
 )
 
 const (
@@ -28,13 +29,13 @@ func NewLogger(level int, output io.Writer) *Logger {
 
 	return &Logger{
 		level:  level,
-		logger: log.New(output, "", log.LstdFlags),
+		logger: log.New(output, "", 0),
 	}
 }
 
 func (l *Logger) log(level int, msg string) {
-	// timestamp := time.Now().Format(time.RFC3339)
-	l.logger.Printf("[%s] %s\n", logNames[level], msg)
+	timestamp := time.Now().Format(time.RFC3339)
+	l.logger.Printf("%s [%s] %s\n", timestamp, logNames[level], msg)
 }
 
 func (l *Logger) Debug(msg string) {
